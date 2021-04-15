@@ -21,22 +21,7 @@ sensor_msgs::JointState jointstate_msg;
 //ros::Publisher rumble_pub("rumble", &rumble_msg);
 
 //char val;
-
-void setup() {
- Serial.begin(9600);
- pwm.begin();                   //初期設定 (アドレス0x40用)
- pwm.setPWMFreq(50);            //PWM周期を50Hzに設定 (アドレス0x40用)
- paper();
-}
-
 int n=160;
-
-void loop() {
-  
-  //delay(500);
-  nh.spinOnce();
-  delay(500);
-}
 
 void servo_write(int ch, int ang){ //動かすサーボチャンネルと角度を指定
   ang = map(ang, 0, 180, SERVOMIN, SERVOMAX); //角度（0～180）をPWMのパルス幅（150～500）に変換
@@ -47,8 +32,12 @@ void jointstate_cb(const sensor_msgs::JointState& msg);
 ros::Subscriber<sensor_msgs::JointState> jointstate_sub("degree", jointstate_cb);
 
 void jointstate_cb(const sensor_msgs::JointState& msg){
-  
+  int finger_deg;
+  finger_deg = msg.position[1];
+  servo_write(7, msg.position[1]);
 }
+
+
 void pick_up(){
   servo_write(THUMB_CH, 70);
   delay(200);
@@ -95,4 +84,21 @@ void paper(){
   servo_write(INDEX_FINGER_CH, 160);
   delay(100);
   //servo_write(THUMB_BASE_CH, 160);
+}
+
+void setup() {
+ nh.initNode();
+ nh.subscribe(jointstate_sub);
+ Serial.begin(9600);
+ pwm.begin();                   //初期設定 (アドレス0x40用)
+ pwm.setPWMFreq(50);            //PWM周期を50Hzに設定 (アドレス0x40用)
+ paper();
+}
+
+
+
+void loop() {
+  //delay(500);
+  nh.spinOnce(); 
+  delay(500);
 }
