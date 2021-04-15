@@ -33,8 +33,8 @@ ros::Subscriber<sensor_msgs::JointState> jointstate_sub("degree", jointstate_cb)
 
 void jointstate_cb(const sensor_msgs::JointState& msg){
   int finger_deg;
-  finger_deg = msg.position[1];
-  servo_write(7, msg.position[1]);
+  finger_deg = msg.position[5];
+  servo_write(7, msg.position[5]);
 }
 
 
@@ -43,36 +43,6 @@ void pick_up(){
   delay(200);
   servo_write(INDEX_FINGER_CH, 90);
   delay(300);
-}
-void push_button(){
-  servo_write(INDEX_FINGER_CH, 130);
-  delay(500);
-}
-
-void scratching(){
-  servo_write(LITTLE_FINGER_CH, n);
-  servo_write(RING_FINGER_CH, n);
-  servo_write(MIDDLE_FINGER_CH, n);
-  servo_write(INDEX_FINGER_CH, n);
-  
-  n=n-140;
-  if(n<=10){
-    n=160;
-  }
-  delay(300); 
-}
-
-void finger_test(){
-  servo_write(LITTLE_FINGER_CH, n);
-  servo_write(RING_FINGER_CH, n);
-  servo_write(MIDDLE_FINGER_CH, n);
-  servo_write(INDEX_FINGER_CH, n);
-  
-  n=n-10;
-  if(n<=10){
-    n=160;
-  }
-  delay(500); 
 }
 
 void paper(){
@@ -89,7 +59,8 @@ void paper(){
 void setup() {
  nh.initNode();
  nh.subscribe(jointstate_sub);
- Serial.begin(9600);
+ 
+ //Serial.begin(9600);
  pwm.begin();                   //初期設定 (アドレス0x40用)
  pwm.setPWMFreq(50);            //PWM周期を50Hzに設定 (アドレス0x40用)
  paper();
@@ -100,5 +71,5 @@ void setup() {
 void loop() {
   //delay(500);
   nh.spinOnce(); 
-  delay(500);
+  delay(200);
 }
