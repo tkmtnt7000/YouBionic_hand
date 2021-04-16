@@ -12,7 +12,7 @@ PCA9685 pwm = PCA9685(0x40);    //PCA9685のアドレス指定（アドレスジ
 
 #include <ros.h>
 #include <sensor_msgs/JointState.h>
-#include <std_msgs/Int16.h>
+//#include <std_msgs/Int16.h>
 
 ros::NodeHandle nh;
 //std_msgs::Int16 rumble_msg;
@@ -29,14 +29,23 @@ void servo_write(int ch, int ang){ //動かすサーボチャンネルと角度�
 }
 
 void jointstate_cb(const sensor_msgs::JointState& msg);
-ros::Subscriber<sensor_msgs::JointState> jointstate_sub("degree", jointstate_cb);
+ros::Subscriber<sensor_msgs::JointState> jointstate_sub("right_hand/joint_state", jointstate_cb);
+/*
+void sample_cb(const std_msgs::Int16& msg);
+ros::Subscriber<std_msgs::Int16> jointstate_sub("manus/right_hand/joint_states", sample_cb);
+*/
 
 void jointstate_cb(const sensor_msgs::JointState& msg){
-  int finger_deg;
-  finger_deg = msg.position[5];
-  servo_write(7, msg.position[5]);
+  servo_write(0, msg.position[4]);
+  servo_write(3, msg.position[3]);
+  servo_write(4, msg.position[2]);
+  servo_write(7, msg.position[1]);
+  servo_write(11, msg.position[0]);
 }
-
+/*
+void sample_cb(const std_msgs::Int16& msg){
+  servo_write(7, msg.data);
+}*/
 
 void pick_up(){
   servo_write(THUMB_CH, 70);
