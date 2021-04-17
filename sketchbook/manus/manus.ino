@@ -36,11 +36,11 @@ ros::Subscriber<std_msgs::Int16> jointstate_sub("manus/right_hand/joint_states",
 */
 
 void jointstate_cb(const sensor_msgs::JointState& jointstate_msg){
-  servo_write(0, msg.position[4]);
-  servo_write(3, msg.position[3]);
-  servo_write(4, msg.position[2]);
-  servo_write(7, msg.position[1]);
-  servo_write(11, msg.position[0]);
+  servo_write(0, jointstate_msg.position[4]);
+  servo_write(3, jointstate_msg.position[3]);
+  servo_write(4, jointstate_msg.position[2]);
+  servo_write(7, jointstate_msg.position[1]);
+  servo_write(11, jointstate_msg.position[0]);
 }
 /*
 void sample_cb(const std_msgs::Int16& msg){
