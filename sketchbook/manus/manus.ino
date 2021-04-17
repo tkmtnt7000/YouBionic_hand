@@ -28,14 +28,14 @@ void servo_write(int ch, int ang){ //動かすサーボチャンネルと角度�
   pwm.setPWM(ch, 0, ang);
 }
 
-void jointstate_cb(const sensor_msgs::JointState& msg);
+void jointstate_cb(const sensor_msgs::JointState& jointstate_msg);
 ros::Subscriber<sensor_msgs::JointState> jointstate_sub("right_hand/joint_state", jointstate_cb);
 /*
 void sample_cb(const std_msgs::Int16& msg);
 ros::Subscriber<std_msgs::Int16> jointstate_sub("manus/right_hand/joint_states", sample_cb);
 */
 
-void jointstate_cb(const sensor_msgs::JointState& msg){
+void jointstate_cb(const sensor_msgs::JointState& jointstate_msg){
   servo_write(0, msg.position[4]);
   servo_write(3, msg.position[3]);
   servo_write(4, msg.position[2]);
