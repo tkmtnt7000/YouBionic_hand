@@ -16,7 +16,7 @@ PCA9685 pwm = PCA9685(0x40);    //PCA9685のアドレス指定（アドレスジ
 
 ros::NodeHandle nh;
 //std_msgs::Int16 rumble_msg;
-sensor_msgs::JointState jointstate_msg;
+//sensor_msgs::JointState jointstate_msg;
 
 //ros::Publisher rumble_pub("rumble", &rumble_msg);
 
@@ -28,19 +28,29 @@ void servo_write(int ch, int ang){ //動かすサーボチャンネルと角度�
   pwm.setPWM(ch, 0, ang);
 }
 
-void jointstate_cb(const sensor_msgs::JointState& msg);
+void jointstate_cb(const sensor_msgs::JointState& jointstate_msg);
 ros::Subscriber<sensor_msgs::JointState> jointstate_sub("right_hand/joint_state", jointstate_cb);
 /*
 void sample_cb(const std_msgs::Int16& msg);
 ros::Subscriber<std_msgs::Int16> jointstate_sub("manus/right_hand/joint_states", sample_cb);
 */
 
-void jointstate_cb(const sensor_msgs::JointState& msg){
-  servo_write(0, msg.position[4]);
-  servo_write(3, msg.position[3]);
-  servo_write(4, msg.position[2]);
-  servo_write(7, msg.position[1]);
-  servo_write(11, msg.position[0]);
+void jointstate_cb(const sensor_msgs::JointState& jointstate_msg){
+  if (msg.position[4] > 25) {
+    servo_write(0, (int)jointstate_msg.position[4]);
+  }
+  if (msg.position[3] > 25) {
+    servo_write(3, (int)jointstate_msg.position[3]);
+  }
+  if (msg.position[2] > 25) {
+    servo_write(4, (int)jointstate_msg.position[2]);
+  }
+  if (msg.position[1] > 25) {
+    servo_write(7, (int)jointstate_msg.position[1]);
+  }
+  if (msg.position[0] > 25) {
+    servo_write(11, (int)jointstate_msg.position[0]);
+  }
 }
 /*
 void sample_cb(const std_msgs::Int16& msg){

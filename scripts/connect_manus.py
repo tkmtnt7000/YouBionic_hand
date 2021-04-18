@@ -14,7 +14,10 @@ def manus_sub():
     rospy.init_node('manus_connector', anonymous=True)
     rospy.Subscriber("/manus/right_hand/joint_states", JointState, callback)
     rospy.spin()
-    
+
+def calc_normalize(n):
+    return n*13//9 + 30
+
 def manus_pub(msg):
     pub_deg = rospy.Publisher('right_hand/joint_state', JointState, queue_size=10)
     #pub = rospy.Publisher('right_hand/finger_degree', Int16, queue_size=10)
@@ -22,7 +25,8 @@ def manus_pub(msg):
     joint_state.header = Header()
     joint_state.header.stamp = rospy.Time.now()
     joint_state.name = ['thumb', 'index', 'middle', 'ring', 'pinky']
-    joint_state.position = [msg.position[3], msg.position[7], msg.position[11], msg.position[15], msg.position[19]]
+    norm_jointstates = map(calc_normalize, msg.position)
+    joint_state.position = [norm_jointstates[3], norm_jointstates[7], norm_jointstates[11], norm_jointstates[15], norm_jointstates[19]]
     #joint_state.position[0] = msg.position[0]
     #joint_state.position[1] = msg.position[4]
     #for i in range(0,5):
