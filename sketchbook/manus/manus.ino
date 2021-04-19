@@ -12,7 +12,7 @@ PCA9685 pwm = PCA9685(0x40);    //PCA9685のアドレス指定（アドレスジ
 
 #include <ros.h>
 #include <sensor_msgs/JointState.h>
-//#include <std_msgs/Int16.h>
+#include <std_msgs/Int16.h>
 
 ros::NodeHandle nh;
 //std_msgs::Int16 rumble_msg;
@@ -27,14 +27,27 @@ void servo_write(int ch, int ang){ //動かすサーボチャンネルと角度�
   pwm.setPWM(ch, 0, ang);
 }
 
-void jointstate_cb(const sensor_msgs::JointState& jointstate_msg);
-ros::Subscriber<sensor_msgs::JointState> jointstate_sub("right_hand/joint_state", jointstate_cb);
+//void jointstate_cb(const sensor_msgs::JointState& jointstate_msg);
+//ros::Subscriber<sensor_msgs::JointState> jointstate_sub("right_hand/joint_state", jointstate_cb);
+void thumb_cb(const std_msgs::Int16& msg);
+void finger_cb(const std_msgs::Int16& msg);
+void index_cb(const std_msgs::Int16& msg);
+void ring_cb(const std_msgs::Int16& msg);
+void pinky_cb(const std_msgs::Int16& msg);
+ros::Subscriber<std_msgs::Int16> thumb_sub("right_hand/thumb", thumb_cb);
+ros::Subscriber<std_msgs::Int16> index_sub("right_hand/index", index_cb);
+ros::Subscriber<std_msgs::Int16> middle_sub("right_hand/middle", middle_cb);
+ros::Subscriber<std_msgs::Int16> ring_sub("right_hand/ring", ring_cb);
+ros::Subscriber<std_msgs::Int16> pinky_sub("right_hand/pinky", pinky_cb);
 /*
 void sample_cb(const std_msgs::Int16& msg);
-ros::Subscriber<std_msgs::Int16> jointstate_sub("manus/right_hand/joint_states", sample_cb);
+ros::Subscriber<std_msgs::Int16> jointstate_sub("right_hand/joint_states", sample_cb);
+//ros::Subscriber<std_msgs::Int16> hoge("right_hand/joint", sample_cb);
 */
-
+/*
 void jointstate_cb(const sensor_msgs::JointState& jointstate_msg){
+  servo_write(7, 30);
+  
   if (jointstate_msg.position[4] > 25) {
     servo_write(0, (int)jointstate_msg.position[4]);
   }
@@ -50,7 +63,29 @@ void jointstate_cb(const sensor_msgs::JointState& jointstate_msg){
   if (jointstate_msg.position[0] > 25) {
     servo_write(11, (int)jointstate_msg.position[0]);
   }
+  
+}*/
+
+void thumb_cb(const std_msgs::Int16& msg){
+  servo_write(THUMB_CH, msg.data);
 }
+
+void index_cb(const std_msgs::Int16& msg){
+  servo_write(INDEX_FINGER_CH, msg.data);
+}
+
+void middle_cb(const std_msgs::Int16& msg){
+  servo_write(MIDDLE_FINGER_CH, msg.data);
+}
+
+void ring_cb(const std_msgs::Int16& msg){
+  servo_write(RING_FINGER_CH, msg.data);
+}
+
+void pinky_cb(const std_msgs::Int16& msg){
+  servo_write(LITTLE_FINGER_CH, msg.data);
+}
+
 /*
 void sample_cb(const std_msgs::Int16& msg){
   servo_write(7, msg.data);
@@ -76,7 +111,12 @@ void paper(){
 
 void setup() {
  nh.initNode();
- nh.subscribe(jointstate_sub);
+ //nh.subscribe(jointstate_sub);
+ nh.subscribe(thumb_sub);
+ nh.subscribe(middle_sub);
+ nh.subscribe(index_sub);
+ nh.subscribe(ring_sub);
+ nh.subscribe(pinky_sub);
  //Serial.begin(9600);
  pwm.begin();                   //初期設定 (アドレス0x40用)
  pwm.setPWMFreq(50);            //PWM周期を50Hzに設定 (アドレス0x40用)
