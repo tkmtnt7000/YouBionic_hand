@@ -20,7 +20,6 @@ ros::NodeHandle nh;
 
 //ros::Publisher rumble_pub("rumble", &rumble_msg);
 
-//char val;
 int n=160;
 
 void servo_write(int ch, int ang){ //動かすサーボチャンネルと角度を指定
@@ -36,19 +35,19 @@ ros::Subscriber<std_msgs::Int16> jointstate_sub("manus/right_hand/joint_states",
 */
 
 void jointstate_cb(const sensor_msgs::JointState& jointstate_msg){
-  if (msg.position[4] > 25) {
+  if (jointstate_msg.position[4] > 25) {
     servo_write(0, (int)jointstate_msg.position[4]);
   }
-  if (msg.position[3] > 25) {
+  if (jointstate_msg.position[3] > 25) {
     servo_write(3, (int)jointstate_msg.position[3]);
   }
-  if (msg.position[2] > 25) {
+  if (jointstate_msg.position[2] > 25) {
     servo_write(4, (int)jointstate_msg.position[2]);
   }
-  if (msg.position[1] > 25) {
+  if (jointstate_msg.position[1] > 25) {
     servo_write(7, (int)jointstate_msg.position[1]);
   }
-  if (msg.position[0] > 25) {
+  if (jointstate_msg.position[0] > 25) {
     servo_write(11, (int)jointstate_msg.position[0]);
   }
 }
@@ -78,13 +77,11 @@ void paper(){
 void setup() {
  nh.initNode();
  nh.subscribe(jointstate_sub);
- 
  //Serial.begin(9600);
  pwm.begin();                   //初期設定 (アドレス0x40用)
  pwm.setPWMFreq(50);            //PWM周期を50Hzに設定 (アドレス0x40用)
  paper();
 }
-
 
 
 void loop() {
