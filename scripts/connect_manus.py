@@ -8,7 +8,11 @@ from sensor_msgs.msg import JointState
 
 def callback(msg):
     rospy.loginfo("done!")
-    manus_pub(msg)
+    manus_thumb_pub(msg)
+    manus_index_pub(msg)
+    manus_middle_pub(msg)
+    manus_ring_pub(msg)
+    manus_pinky_pub(msg)
 
 def manus_sub():
     rospy.init_node('manus_connector', anonymous=True)
@@ -18,6 +22,37 @@ def manus_sub():
 def calc_normalize(n):
     return n*13//9 + 30
 
+def manus_thumb_pub(msg):
+    pub_thumb = rospy.Publisher('right_hand/thumb', Int16, queue_size=10)
+    thumb_deg = Int16()
+    thumb_deg.data = msg.position[3]*13//9 + 30
+    pub_thumb.publish(thumb_deg)
+
+def manus_index_pub(msg):
+    pub_index = rospy.Publisher('right_hand/index', Int16, queue_size=10)
+    index_deg = Int16()
+    index_deg.data = msg.position[7]*13//9 + 30
+    pub_index.publish(index_deg)
+    
+def manus_middle_pub(msg):
+    pub_middle = rospy.Publisher('right_hand/middle', Int16, queue_size=10)
+    middle_deg = Int16()
+    middle_deg.data = msg.position[3]*13//9 + 30
+    pub_middle.publish(middle_deg)
+    
+def manus_ring_pub(msg):
+    pub_ring = rospy.Publisher('right_hand/ring', Int16, queue_size=10)
+    ring_deg = Int16()
+    ring_deg.data = msg.position[3]*13//9 + 30
+    print "ring!"
+    pub_ring.publish(ring_deg)
+
+def manus_pinky_pub(msg):
+    pub_pinky = rospy.Publisher('right_hand/pinky', Int16, queue_size=10)
+    pinky_deg = Int16()
+    pinky_deg.data = msg.position[3]*13//9 + 30
+    pub_pinky.publish(pinky_deg)
+    
 def manus_pub(msg):
     pub_deg = rospy.Publisher('right_hand/joint_state', JointState, queue_size=10)
     #pub = rospy.Publisher('right_hand/finger_degree', Int16, queue_size=10)
